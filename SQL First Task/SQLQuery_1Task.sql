@@ -101,9 +101,9 @@ CREATE PROCEDURE CountOfSingleMenInInterval(
 	)
 AS
 BEGIN
-	SELECT BusinessEntityID, BirthDate, NationalIDNumber, OrganizationNode, MaritalStatus, Gender, HireDate
-	FROM HumanResources.Employee
-	WHERE (Gender='M' AND MaritalStatus='S' AND @dateFrom < BirthDate AND BirthDate < @dateTo); 
+	SELECT HumanResources.Employee.BusinessEntityID, FirstName, MiddleName, LastName, BirthDate, NationalIDNumber, OrganizationNode, MaritalStatus, Gender, HireDate
+	FROM HumanResources.Employee, Person.Person
+	WHERE (Gender='M' AND MaritalStatus='S' AND @dateFrom < BirthDate AND BirthDate < @dateTo) AND HumanResources.Employee.BusinessEntityID = Person.BusinessEntityID;
 		
 	SELECT @count = COUNT(BusinessEntityID)
 	FROM HumanResources.Employee
@@ -112,6 +112,9 @@ END;
 
 CREATE TABLE #TmpResult(
 	BusinessEntityID int,
+	FirstName nvarchar(50),
+	MiddleName nvarchar(50),
+	LastName nvarchar(50),
 	BirthDate date,
 	NationalIDNumber nvarchar(50),
 	OrganizationNode hierarchyid,
